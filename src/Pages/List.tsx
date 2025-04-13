@@ -7,6 +7,7 @@ interface ListProps {
 }
 
 const ListActions = ({ action }: ListProps) => {
+  const { id } = useParams();
   const navigate = useNavigate();
   type Status = "error" | "pending" | "success";
   type Message =
@@ -37,7 +38,6 @@ const ListActions = ({ action }: ListProps) => {
   const getData = async () => {
     setStatus("pending");
     const data = await localStorage.getItem("item");
-    const { id } = useParams();
     const parsed = JSON.parse(data || "[{}]");
     setFormData(parsed[Number(id)]);
   };
@@ -69,7 +69,6 @@ const ListActions = ({ action }: ListProps) => {
             await localStorage.setItem("item", `[${JSON.stringify(formData)}]`);
           } else {
             let dataArr: FormData[] = JSON.parse(data);
-            console.log(dataArr);
             dataArr.push(formData);
             await localStorage.setItem("item", JSON.stringify(dataArr));
           }

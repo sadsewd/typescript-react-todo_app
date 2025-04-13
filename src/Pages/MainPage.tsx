@@ -1,26 +1,34 @@
 import { Button, Container, Paper, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
+import CardComponent from "../Components/Card";
+import { useNavigate } from "react-router-dom";
 
 const MainPage = () => {
+  const navigate = useNavigate();
   interface listObject {
     title: string;
     steps: string[];
   }
 
-  interface arrayOfObjects {
-    item: listObject[];
-  }
-
-  const [Data, setData] = useState<arrayOfObjects>();
+  const [Data, setData] = useState<listObject[]>();
 
   useEffect(() => {
     getData();
   }, []);
 
   const getData = async () => {
-    const res: string | null = await localStorage.getItem("lists");
+    const res = await localStorage.getItem("item");
     if (res != null) {
-      console.log(JSON.parse(res));
+      setData(JSON.parse(res) || [{}]);
+    }
+  };
+
+  const deleteElement = async (index: number) => {
+    if (Data) {
+      let updateArr = [...Data];
+      updateArr.splice(index, 1);
+      setData(updateArr);
+      await localStorage.setItem("item", JSON.stringify(updateArr));
     }
   };
 
@@ -39,7 +47,25 @@ const MainPage = () => {
       </Button>
       <TextField placeholder="Search list" />
 
-      <Paper>{}</Paper>
+      <Paper>
+        {Data != undefined ? (
+          Data.map((el, i) => {
+            return (
+              <CardComponent
+                title={el.title}
+                deleteFunc={() => deleteElement(i)}
+                editFunc={() => {
+                  navigate(`/edit/${i}`);
+                }}
+                index={i}
+                key={i + 1}
+              />
+            );
+          })
+        ) : (
+          <>No to-do lists made</>
+        )}
+      </Paper>
     </Container>
   );
 };
