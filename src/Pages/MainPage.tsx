@@ -47,7 +47,10 @@ const MainPage = () => {
       </Button>
       <TextField placeholder="Search list" />
 
-      <Paper>
+      <Container
+        style={{ display: "flex", flexDirection: "column", gap: 16 }}
+        disableGutters={true}
+      >
         {Data != undefined ? (
           Data.map((el, i) => {
             return (
@@ -65,7 +68,7 @@ const MainPage = () => {
         ) : (
           <>No to-do lists made</>
         )}
-      </Paper>
+      </Container>
     </Container>
   );
 };

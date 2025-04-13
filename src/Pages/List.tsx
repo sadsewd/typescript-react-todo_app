@@ -1,4 +1,11 @@
-import { Button, Container, TextField } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Container,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -36,7 +43,6 @@ const ListActions = ({ action }: ListProps) => {
   }, []);
 
   const getData = async () => {
-    setStatus("pending");
     const data = await localStorage.getItem("item");
     const parsed = JSON.parse(data || "[{}]");
     setFormData(parsed[Number(id)]);
@@ -65,12 +71,23 @@ const ListActions = ({ action }: ListProps) => {
         setStatus("pending");
         try {
           let data = (await localStorage.getItem("item")) || "{}";
-          if (data == "{}") {
-            await localStorage.setItem("item", `[${JSON.stringify(formData)}]`);
+          if (action == "create") {
+            if (data == "{}") {
+              await localStorage.setItem(
+                "item",
+                `[${JSON.stringify(formData)}]`
+              );
+            } else {
+              let dataArr: FormData[] = JSON.parse(data);
+              dataArr.push(formData);
+              await localStorage.setItem("item", JSON.stringify(dataArr));
+            }
           } else {
-            let dataArr: FormData[] = JSON.parse(data);
-            dataArr.push(formData);
-            await localStorage.setItem("item", JSON.stringify(dataArr));
+            if (id) {
+              let dataArr: FormData[] = JSON.parse(data);
+              dataArr[parseInt(id)] = formData;
+              await localStorage.setItem("item", JSON.stringify(dataArr));
+            }
           }
           setMessage("Data added succesfully");
           setStatus("success");
@@ -139,8 +156,26 @@ const ListActions = ({ action }: ListProps) => {
         }
         onClick={handleSubmit}
       >
-        Submit
+        {status == "pending" ? <CircularProgress /> : "Submit"}
       </Button>
+      {message ? (
+        <Container
+          style={{
+            border: "solid 1px",
+            borderColor:
+              status == "error"
+                ? "red"
+                : status == "success"
+                ? "green"
+                : "white",
+            borderRadius: 4,
+          }}
+        >
+          <Typography style={{ textAlign: "center" }}>{message}</Typography>
+        </Container>
+      ) : (
+        <></>
+      )}
     </Container>
   );
 };

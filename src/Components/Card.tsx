@@ -12,11 +12,13 @@ const CardComponent = ({ title, editFunc, index, deleteFunc }: CardProps) => {
     <Card
       style={{
         height: "8rem",
-        paddingTop: 8,
+        paddingTop: 32,
         display: "flex",
         justifyContent: "space-between",
         flexDirection: "column",
+        borderColor: "blueviolet",
       }}
+      variant="outlined"
     >
       <Typography style={{ textAlign: "center" }}>{title}</Typography>
       <Container style={{ width: "100%" }} disableGutters={true}>
