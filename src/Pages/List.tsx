@@ -2,7 +2,6 @@ import {
   Button,
   CircularProgress,
   Container,
-  Paper,
   TextField,
   Typography,
 } from "@mui/material";
